@@ -44,19 +44,29 @@ function createResultElement(job) {
     const titleRow = createElement("div", null, "result-title-row");
     const title = createElement("h2", null, "result-title");
     const date = createElement("div", null, "");
-    const companyLocation = createElement("h4", null, null);
+    //const companyLocation = createElement("h4", null, null);
 
-    let location = extractTag(job, "LOCATION");
+    const location = extractTag(job, "LOCATION");
     const company = extractTag(job, "COMPANY");
+
+    const companyEl = createElement("div", null, "tag");
+    const locationEl = createElement("div", null, "tag");
+
+    companyEl.innerText = company;
+    locationEl.innerHTML = location;
 
     title.innerHTML = job.title;
     date.innerHTML = job.startDate;
-    companyLocation.innerHTML = company + " - " + location;
+
+    //companyLocation.innerHTML = company + " - " + location;
+    const tagsEl = createElement("div", null, "tags");
+    tagsEl.append(companyEl);
+    tagsEl.append(locationEl);
 
     titleRow.append(title);
     titleRow.append(date);
     result.appendChild(titleRow);
-    result.appendChild(companyLocation);
+    result.appendChild(tagsEl);
     return result;
 }
 
