@@ -1,22 +1,29 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    let searchEl = document.getElementById("search");
-    searchEl.addEventListener("keydown", function (e) {
+    document.getElementById("search").addEventListener("keydown", function (e) {
         if (e.key === "Enter") {
             e.preventDefault();
             fetchJobs(e.target.value).then(jobs => createJobsResultElement(jobs));
         }
     });
 
-    let tagsEl = document.getElementById("tags");
-    tagsEl.addEventListener("change", function (e) {});
+    document.getElementById("tags").addEventListener("change", function (e) {
+    });
 
     fetchJobs().then(jobs => createJobsResultElement(jobs));
 });
 
 
+/* *********************************************************************************************** */
+
+
 async function fetchJobs(keywords) {
-    const params = new URLSearchParams({keywords: keywords});
+    const params = new URLSearchParams();
+    if (keywords) {
+        for (const keyword of keywords.split(" ")) {
+            params.append("keywords", keyword);
+        }
+    }
     const url = keywords ? "api/jobs?" + params : "/api/jobs";
 
     try {
@@ -31,7 +38,7 @@ async function fetchJobs(keywords) {
     }
 }
 
-function createJobsResultElement(jobs) {
+const createJobsResultElement = (jobs) => {
     const resultContainer = document.getElementById("search-result-container");
     resultContainer.replaceChildren();
     for (const job of jobs) {
@@ -39,46 +46,38 @@ function createJobsResultElement(jobs) {
     }
 }
 
+
+/* ******************************************************************************************** */
+
 function createResultElement(job) {
+    const {title, startDate} = job;
+    var date = new Date(startDate);
     const result = createElement("div", "search-result");
     const titleRow = createElement("div", null, "result-title-row");
-    const title = createElement("h2", null, "result-title");
-    const date = createElement("div", null, "");
-    //const companyLocation = createElement("h4", null, null);
 
-    const location = extractTag(job, "LOCATION");
-    const company = extractTag(job, "COMPANY");
-
-    const companyEl = createElement("div", null, "tag");
-    const locationEl = createElement("div", null, "tag");
-
-    companyEl.innerText = company;
-    locationEl.innerHTML = location;
-
-    title.innerHTML = job.title;
-    date.innerHTML = job.startDate;
-
-    //companyLocation.innerHTML = company + " - " + location;
-    const tagsEl = createElement("div", null, "tags");
-    tagsEl.append(companyEl);
-    tagsEl.append(locationEl);
-
-    titleRow.append(title);
-    titleRow.append(date);
+    titleRow.append(createElement("h2", null, "result-title", title));
+    titleRow.append(createElement("div", null, "", date.toLocaleDateString("sv-SE")));
     result.appendChild(titleRow);
+
+    const tagsEl = createElement("div", null, "tags");
+    tagsEl.append(createElement("div", null, "tag", extractTag(job, "COMPANY")));
+    tagsEl.append(createElement("div", null, "tag", extractTag(job, "LOCATION")));
+
     result.appendChild(tagsEl);
+
     return result;
 }
 
 function extractTag(job, tagType) {
     for (const tag of job.tags) {
-        if(tag.type === tagType) {
+        if (tag.type === tagType) {
             return tag.name;
         }
     }
 }
 
-function createElement(type, id, cssClass) {
+
+function createElement(type, id, cssClass, content) {
     const el = document.createElement(type);
 
     if (id) {
@@ -87,6 +86,10 @@ function createElement(type, id, cssClass) {
 
     if (cssClass) {
         el.classList.add(cssClass);
+    }
+
+    if (content) {
+        el.innerHTML = content;
     }
 
     return el;

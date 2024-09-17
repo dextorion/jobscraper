@@ -1,4 +1,4 @@
-package com.lifetech.job.data;
+package com.lifetech.job.client;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

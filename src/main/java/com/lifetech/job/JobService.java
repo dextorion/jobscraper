@@ -1,6 +1,6 @@
 package com.lifetech.job;
 
-import com.lifetech.job.data.Job;
+import com.lifetech.job.db.Job;
 import com.lifetech.tag.data.Tag;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,13 +12,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 @Service
 public class JobService {
@@ -26,9 +26,8 @@ public class JobService {
     private static final Logger log = LoggerFactory.getLogger(JobService.class);
 
     private final Function<Integer, Document> jobDocumentSupplier;
-    private final Function<Job, Job> saveJob;
-    private final Function<Integer, List<Job>> getJobsLimitedTo;
-    private final BiFunction<String, Integer, List<Job>> getJobsByTitleLimitedTo;
+    private final BiFunction<List<String>, Integer, List<Job>> findJobs;
+    private final Consumer<Job> saveJob;
     private final Function<Tag, Tag> saveTag;
     private final Function<String, Tag> finTagByName;
 
@@ -39,20 +38,16 @@ public class JobService {
 
     public JobService(
             final Function<Integer, Document> jobDocumentSupplier,
-            final Function<Job, Job> saveJob,
-            final Supplier<List<Job>> getJobs,
-            final Function<Integer, List<Job>> getJobsLimitedTo,
-            final BiFunction<String, Integer, List<Job>> getJobsByTitleLimitedTo,
+            final BiFunction<List<String>, Integer, List<Job>> findJobs,
+            final Consumer<Job> saveJob,
             final Function<Tag, Tag> saveTag,
             final Function<String, Tag> finTagByName,
             @Value("${jobs.search.weekdaysTimePeriodHours}") final Integer weekdaysTimePeriodHours,
             @Value("${jobs.search.weekendsTimePeriodHours}") final Integer weekendsTimePeriodHours,
-            @Value("${jobs.search.nightlyTimePeriodHours}") final Integer nightlyTimePeriodHours
-    ) {
+            @Value("${jobs.search.nightlyTimePeriodHours}") final Integer nightlyTimePeriodHours) {
         this.jobDocumentSupplier = jobDocumentSupplier;
+        this.findJobs = findJobs;
         this.saveJob = saveJob;
-        this.getJobsLimitedTo = getJobsLimitedTo;
-        this.getJobsByTitleLimitedTo = getJobsByTitleLimitedTo;
         this.saveTag = saveTag;
         this.finTagByName = finTagByName;
         this.weekdaysTimePeriodHours = weekdaysTimePeriodHours;
@@ -71,13 +66,13 @@ public class JobService {
                 String title = extractTitle(job);
                 String company = extractCompany(job);
                 String location = extractLocation(job);
-                LocalDate startDate = LocalDate.now();
+                LocalDateTime startDate = LocalDateTime.now();
 
                 Set<Tag> tags = new HashSet<>();
                 tags.add(createTag(company, "COMPANY"));
                 tags.add(createTag(location, "LOCATION"));
 
-                saveJob.apply(new Job(linkedinId, title, null, startDate, null, tags));
+                saveJob.accept(new Job(linkedinId, title, null, startDate, null, tags));
             } catch (DataIntegrityViolationException e) {
                 log.warn(e.getMostSpecificCause().getMessage());
             } catch (Exception e) {
@@ -95,8 +90,8 @@ public class JobService {
         }
     }
 
-    public List<Job> getJobs(String keyword, Integer limit) {
-        return keyword != null && !keyword.isEmpty() ? getJobsByTitleLimitedTo.apply(keyword, limit) : getJobsLimitedTo.apply(limit);
+    public List<Job> getJobs(List<String> keywords, Integer limit) {
+        return findJobs.apply(keywords, limit);
     }
 
 
@@ -127,7 +122,6 @@ public class JobService {
         Elements location = baseCardElement.select(".job-search-card__location");
         return !location.isEmpty() ? location.text() : "";
     }
-
 
 
     @Scheduled(cron = "${jobs.search.scheduleWeekdaysCron}")

@@ -3,7 +3,7 @@ CREATE TABLE jobs (
     linkedin_id BIGINT UNIQUE NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    start_date DATE NOT NULL,
+    start_date TIMESTAMP NOT NULL,
     end_date DATE
 );
 

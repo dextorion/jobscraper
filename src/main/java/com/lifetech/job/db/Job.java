@@ -1,9 +1,10 @@
-package com.lifetech.job.data;
+package com.lifetech.job.db;
 
 import com.lifetech.tag.data.Tag;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity(name = "jobs")
@@ -15,7 +16,7 @@ public class Job {
     private Long linkedinId;
     private String title;
     private String description;
-    private LocalDate startDate;
+    private LocalDateTime startDate;
     private LocalDate endDate;
 
     @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
@@ -25,11 +26,11 @@ public class Job {
     public Job() {
     }
 
-    public Job(Long linkedinId, String title, String description, LocalDate startDate, LocalDate endDate, Set<Tag> tags) {
+    public Job(Long linkedinId, String title, String description, LocalDateTime startDate, LocalDate endDate, Set<Tag> tags) {
         this(null, linkedinId, title, description, startDate, endDate, tags);
     }
 
-    public Job(Integer id, Long linkedinId, String title, String description, LocalDate startDate, LocalDate endDate, Set<Tag> tags) {
+    public Job(Integer id, Long linkedinId, String title, String description, LocalDateTime startDate, LocalDate endDate, Set<Tag> tags) {
         this.id = id;
         this.linkedinId = linkedinId;
         this.title = title;
@@ -52,7 +53,7 @@ public class Job {
         return title;
     }
 
-    public LocalDate getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 

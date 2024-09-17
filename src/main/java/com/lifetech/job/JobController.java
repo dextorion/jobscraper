@@ -1,6 +1,6 @@
 package com.lifetech.job;
 
-import com.lifetech.job.data.Job;
+import com.lifetech.job.db.Job;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +19,7 @@ public class JobController {
     }
 
     @GetMapping("/jobs")
-    public List<Job> getJobs(@RequestParam(required = false) String keywords, @RequestParam(required = false) Integer limit) {
+    public List<Job> getJobs(@RequestParam(required = false) List<String> keywords, @RequestParam(required = false) Integer limit) {
         return jobService.getJobs(keywords, limit != null ? limit : 10);
     }
 
