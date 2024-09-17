@@ -39,7 +39,7 @@ public class LinkedinDocumentSupplier implements Function<Integer, Document> {
     public Document apply(Integer timePeriodHours) {
         try {
             Connection con = Jsoup.connect(url).data("keywords", keywords).data("geoId", geoId).data("f_PP", places).data("f_TPR", "r" + timePeriodHours * 60 * 60);
-            Document document = con.userAgent(USER_AGENT).get();
+            Document document = con.header("Accept-Language", "sv").userAgent(USER_AGENT).get();
             log.info("Linkedin job search from url: {}", document.location());
             return document;
 

@@ -20,15 +20,12 @@ public class JobController {
 
     @GetMapping("/jobs")
     public List<Job> getJobs(@RequestParam(required = false) List<String> keywords, @RequestParam(required = false) Integer limit) {
-        return jobService.getJobs(keywords, limit != null ? limit : 10);
+        return jobService.getJobs(keywords, limit != null ? limit : 25);
     }
-
-
-
 
 
     @GetMapping("/fetchJobs")
     public void fetchJobs() {
-        jobService.fetchJobs(12);
+        jobService.fetchJobs(24);
     }
 }

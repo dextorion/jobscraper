@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -123,17 +124,19 @@ public class JobService {
         return !location.isEmpty() ? location.text() : "";
     }
 
-
+    @Transactional
     @Scheduled(cron = "${jobs.search.scheduleWeekdaysCron}")
     public void fetchWeekdaysJobs() {
         fetchJobs(weekdaysTimePeriodHours);
     }
 
+    @Transactional
     @Scheduled(cron = "${jobs.search.scheduleNightlyCron}")
     public void fetchNightlyCron() {
         fetchJobs(nightlyTimePeriodHours);
     }
 
+    @Transactional
     @Scheduled(cron = "${jobs.search.scheduleWeekendsCron}")
     public void fetchJobsWeekends() {
         fetchJobs(weekendsTimePeriodHours);
