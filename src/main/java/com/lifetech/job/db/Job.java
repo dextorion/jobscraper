@@ -1,6 +1,6 @@
 package com.lifetech.job.db;
 
-import com.lifetech.tag.data.Tag;
+import com.lifetech.tag.db.Tag;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -19,7 +19,7 @@ public class Job {
     private LocalDateTime startDate;
     private LocalDate endDate;
 
-    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "jobs_tags", joinColumns = @JoinColumn(name = "jobs_id"), inverseJoinColumns = @JoinColumn(name = "tags_id"))
     private Set<Tag> tags;
 

@@ -1,6 +1,9 @@
-package com.lifetech.tag.data;
+package com.lifetech.tag.db;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 
 @Entity(name = "tags")
@@ -13,7 +16,8 @@ public class Tag {
     private String name;
 
 
-    public Tag() {}
+    public Tag() {
+    }
 
     public Tag(final String type, final String name) {
         this.type = type;

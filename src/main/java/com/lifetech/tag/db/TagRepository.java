@@ -1,4 +1,4 @@
-package com.lifetech.tag.data;
+package com.lifetech.tag.db;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;

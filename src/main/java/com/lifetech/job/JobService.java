@@ -1,7 +1,7 @@
 package com.lifetech.job;
 
 import com.lifetech.job.db.Job;
-import com.lifetech.tag.data.Tag;
+import com.lifetech.tag.db.Tag;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;

@@ -1,44 +1,67 @@
 document.addEventListener('DOMContentLoaded', () => {
-
-    document.getElementById("search").addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            fetchJobs(e.target.value).then(jobs => createJobsResultElement(jobs));
+    document.getElementById("search").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            saveToLocal("searchKeywords", event.target.value);
+            event.target.value = "";
+            loadResult();
+        }
+    });
+    document.getElementById("tags").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            saveToLocal("filterTags", event.target.value);
+            event.target.value = "";
+            loadResult();
         }
     });
 
-    document.getElementById("tags").addEventListener("change", function (e) {
-    });
+    getFromLocal("searchKeywords").forEach(keyword => {
+        const keywordEl = createElement("div", null, "tag", keyword);
+        document.getElementById("search-keywords").append(keywordEl);
+    })
 
-    fetchJobs().then(jobs => createJobsResultElement(jobs));
+    loadResult();
 });
 
+const loadResult = () => {
+    const searchKeywords = getFromLocal("searchKeywords");
+    const filterTags = getFromLocal("filterTags");
+    fetchJobs(searchKeywords, filterTags).then(jobs => createSearchResult(jobs));
 
-/* *********************************************************************************************** */
+    const searchKeywordsEl = document.getElementById("search-keywords");
+    const filterTagsEl = document.getElementById("filter-tags");
+
+    searchKeywordsEl.textContent = "";
+    for (const keyword of searchKeywords) {
+        searchKeywordsEl.append(createElement("div", null, "tag", keyword));
+    }
+
+    filterTagsEl.textContent = "";
+    for (const tag of filterTags) {
+        filterTagsEl.append(createElement("div", null, "tag", tag));
+    }
+
+}
 
 
-async function fetchJobs(keywords) {
+async function fetchJobs(keywords, tags) {
     const params = new URLSearchParams();
     if (keywords) {
-        for (const keyword of keywords.split(" ")) {
+        for (const keyword of keywords) {
             params.append("keywords", keyword);
         }
     }
-    const url = keywords ? "api/jobs?" + params : "/api/jobs";
-
-    try {
-        const response = await fetch(url);
-        if (response.ok) {
-            return await response.json();
-        } else {
-            console.error("Error fetching jobs: ", response.statusText);
+    if (tags) {
+        for (const tag of tags) {
+            params.append("filterwords", tag);
         }
-    } catch (error) {
-        console.error("Fetch Jobs failed: ", error);
     }
+    const url = params.size > 0 ? "api/jobs?" + params : "/api/jobs";
+
+    return get(url);
 }
 
-const createJobsResultElement = (jobs) => {
+
+const createSearchResult = (jobs) => {
     const resultContainer = document.getElementById("search-result-container");
     resultContainer.replaceChildren();
     for (const job of jobs) {
@@ -46,17 +69,14 @@ const createJobsResultElement = (jobs) => {
     }
 }
 
-
-/* ******************************************************************************************** */
-
-function createResultElement(job) {
+const createResultElement = (job) => {
     const {title, startDate} = job;
-    var date = new Date(startDate);
+
     const result = createElement("div", "search-result");
     const titleRow = createElement("div", null, "result-title-row");
 
     titleRow.append(createElement("h2", null, "result-title", title));
-    titleRow.append(createElement("div", null, "", date.toLocaleDateString("sv-SE")));
+    titleRow.append(createElement("div", null, "", new Date(startDate).toLocaleDateString("sv-SE")));
     result.appendChild(titleRow);
 
     const tagsEl = createElement("div", null, "tags");
@@ -74,23 +94,4 @@ function extractTag(job, tagType) {
             return tag.name;
         }
     }
-}
-
-
-function createElement(type, id, cssClass, content) {
-    const el = document.createElement(type);
-
-    if (id) {
-        el.setAttribute("id", id);
-    }
-
-    if (cssClass) {
-        el.classList.add(cssClass);
-    }
-
-    if (content) {
-        el.innerHTML = content;
-    }
-
-    return el;
 }

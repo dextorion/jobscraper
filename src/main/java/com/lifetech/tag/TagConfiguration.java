@@ -1,7 +1,7 @@
 package com.lifetech.tag;
 
-import com.lifetech.tag.data.Tag;
-import com.lifetech.tag.data.TagRepository;
+import com.lifetech.tag.db.Tag;
+import com.lifetech.tag.db.TagRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
