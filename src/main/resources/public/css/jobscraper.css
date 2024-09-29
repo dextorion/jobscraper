@@ -2,6 +2,13 @@ body {
     font-family: 'Calibri', Arial, monospace;
 }
 
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
+}
+
 .container {
     display: flex;
     flex-direction: column;
@@ -18,7 +25,11 @@ h4 {
     margin: 5px 0 5px 0;
 }
 
-.tag {
+input {
+    margin: 0 0 7px 0;
+}
+
+.tag, .result-actions {
     background: lightgray;
     display: inline-block;
     border-radius: 5px;
@@ -26,14 +37,33 @@ h4 {
     margin: 0 2px 0 2px;
 }
 
+.result-actions {
+    padding: 2px 3px;
+}
+
+#search-keywords .tag, #filter-tags .tag {
+    cursor: pointer;
+}
+
 #search-result {
     padding: 25px 0 5px 0;
     justify-content: space-between;
-
 }
 
 .result-title-row {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.result-actions-tags-row {
+    display: flex;
+}
+
+.result-actions-tags-row img {
+    width: 19px;
+    height: 19px;
+    vertical-align: middle;
+    margin: 0 3px 0 3px;
+    cursor: pointer;
 }

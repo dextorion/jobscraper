@@ -3,13 +3,15 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="jobscraper.css">
-    <script src="util.js" type="text/javascript"></script>
-    <script src="jobscraper.js" type="text/javascript"></script>
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="css/jobscraper.css">
+    <script src="js/app.js" type="text/javascript"></script>
+    <script src="js/util.js" type="text/javascript"></script>
+    <script src="js/jobscraper.js" type="text/javascript"></script>
     <title>Job Scraper</title>
 </head>
 
-<body>
+<body>img
 <div class="container">
     <h1>Welcome to Job Scraper</h1>
 
@@ -21,7 +23,15 @@
 
     <label for="tags">Add filter</label>
     <input id="tags" placeholder="location, company...">
-    <div id="filter-tags" class="tags">
+    <div class="result-actions-tags-row">
+        <div class="result-actions">
+            <img id="show-deleted" src="img/delete.png" alt="deleted">
+            <img id="show-applied" src="img/check.png" alt="applied">
+            <img id="show-bookmarked" src="img/bookmark.png" alt="bookmarked">
+        </div>
+
+        <div id="filter-tags" class="tags">
+        </div>
     </div>
 
 

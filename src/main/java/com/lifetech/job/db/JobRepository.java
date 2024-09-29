@@ -30,6 +30,11 @@ public class JobRepository {
         entityManager.persist(job);
     }
 
+    @Transactional
+    public void update(final Job job) {
+        entityManager.merge(job);
+    }
+
 
     public List<Job> findJobs(List<String> keywords, Integer limit) {
         CriteriaQuery<Job> criteriaQuery = criteriaBuilder.createQuery(Job.class);
@@ -49,5 +54,9 @@ public class JobRepository {
         }
 
         return query.getResultList();
+    }
+
+    public Job findJob(Integer id) {
+        return entityManager.find(Job.class, id);
     }
 }

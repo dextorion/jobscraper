@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Configuration
 public class JobConfiguration {
@@ -21,5 +22,10 @@ public class JobConfiguration {
     @Bean
     public BiFunction<List<String>, Integer, List<Job>> findJobs(JobRepository jobRepository) {
         return jobRepository::findJobs;
+    }
+
+    @Bean
+    public Function<Integer, Job> findJob(JobRepository jobRepository) {
+        return jobRepository::findJob;
     }
 }

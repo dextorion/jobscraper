@@ -1,9 +1,6 @@
 package com.lifetech.tag.db;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 
 @Entity(name = "tags")
@@ -12,14 +9,15 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private TagType type;
     private String name;
 
 
     public Tag() {
     }
 
-    public Tag(final String type, final String name) {
+    public Tag(final TagType type, final String name) {
         this.type = type;
         this.name = name;
     }
@@ -32,11 +30,11 @@ public class Tag {
         this.id = id;
     }
 
-    public String getType() {
+    public TagType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TagType type) {
         this.type = type;
     }
 
